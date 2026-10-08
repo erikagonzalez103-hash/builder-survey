@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eridion Glass — Builder Survey</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Brand Guidelines v2.1: navy carries structure, deep green is the single accent on light backgrounds.
+   Squared corners throughout (logo geometry). */
+:root {
+  --navy: #153862;
+  --navy-deep: #0E2741;
+  --navy-wash: #EAEEF3;
+  --green: #1E6B00;      /* deep green: the one green on light layouts */
+  --ink: #000000;
+  --slate: #5C6B7A;
+  --rule: #C4C4C4;
+  --hairline: #E6E8EC;
+  --bg: #F7F8FA;
+  --card: #FFFFFF;
+  --display: 'Jost', 'Futura', 'Century Gothic', sans-serif;
+  --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.5 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 0 120px; }
+
+/* Header */
+header { background: var(--navy); color: #fff; padding-block: 28px 32px; position: relative; overflow: hidden; }
+header::after { /* the cut corner, tied to the mark */
+  content: ''; position: absolute; right: 0; top: 0;
+  border-style: solid; border-width: 0 44px 44px 0;
+  border-color: transparent #32A200 transparent transparent;
+}
+header .wrap { padding-block: 0; }
+.wordmark { font: 400 13px/1 var(--display); letter-spacing: .32em; text-transform: uppercase; }
+.wordmark b { font-weight: 500; }
+header h1 { font: 300 clamp(30px, 7vw, 40px)/1.12 var(--display); margin: 22px 0 10px; text-wrap: balance; }
+header p { margin: 0; color: #C9D3DF; max-width: 34em; }
+.meta { margin-top: 18px; font: 400 12px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: #9FB0C3; }
+
+/* Progress */
+.progress { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--hairline); }
+.progress .bar { height: 3px; background: var(--hairline); }
+.progress .fill { height: 3px; width: 0; background: var(--green); transition: width .25s ease; }
+.progress .wrap { padding-block: 8px; font-size: 13px; color: var(--slate); display: flex; justify-content: space-between; }
+
+/* Questions */
+form { display: grid; gap: 14px; margin-top: 22px; }
+fieldset { border: 1px solid var(--hairline); background: var(--card); margin: 0; padding: 20px 18px 18px; min-width: 0; }
+legend { padding: 0; float: left; width: 100%; }
+.q-num { display: block; font: 400 12px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--slate); margin-bottom: 8px; }
+.q-text { display: block; font: 400 22px/1.25 var(--display); color: var(--navy); text-wrap: balance; }
+.hint { clear: both; display: block; font-size: 13px; color: var(--slate); padding-top: 6px; }
+.opts { clear: both; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
+.opt { position: relative; }
+.opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.opt span {
+  display: inline-block; padding: 10px 14px; border: 1px solid var(--rule); background: var(--card);
+  font-size: 15px; line-height: 1.25; cursor: pointer; user-select: none;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.opt input:hover + span { border-color: var(--navy); }
+.opt input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.opt input:focus-visible + span { outline: 2px solid var(--green); outline-offset: 2px; }
+.opt input:disabled + span { opacity: .4; cursor: not-allowed; }
+textarea, input[type=text] {
+  clear: both; display: block; width: 100%; margin-top: 14px; padding: 12px 14px;
+  font: 400 16px/1.45 var(--body); color: var(--ink); background: var(--card);
+  border: 1px solid var(--rule); border-radius: 0; resize: vertical;
+}
+textarea:focus, input[type=text]:focus { outline: 2px solid var(--green); outline-offset: 0; border-color: var(--green); }
+.other { display: none; }
+.other.show { display: block; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.two input { margin-top: 14px; }
+@media (max-width: 480px) { .two { grid-template-columns: 1fr; gap: 0; } }
+
+/* Submit */
+.submit-bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--hairline);
+  padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 6; }
+.submit-bar .wrap { padding-block: 12px; display: flex; align-items: center; gap: 14px; }
+.submit-bar small { color: var(--slate); font-size: 13px; flex: 1; min-width: 0; }
+button {
+  font: 500 15px/1 var(--body); letter-spacing: .02em; color: #fff; background: var(--navy);
+  border: 0; border-radius: 0; padding: 15px 26px; cursor: pointer;
+}
+button:hover { background: var(--navy-deep); }
+button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+button:disabled { opacity: .55; cursor: wait; }
+.error { color: #A12A2A; font-size: 14px; margin-top: 4px; display: none; }
+.error.show { display: block; }
+
+/* Thanks */
+.thanks { display: none; margin-top: 28px; background: var(--card); border: 1px solid var(--hairline); padding: 32px 22px; }
+.thanks h2 { font: 300 32px/1.15 var(--display); color: var(--navy); margin: 0 0 12px; }
+.thanks .rule { width: 52px; height: 3px; background: var(--green); margin-bottom: 18px; }
+.thanks p { margin: 0 0 10px; max-width: 34em; }
+.thanks .sig { color: var(--slate); margin-top: 18px; }
+body.done form, body.done .submit-bar, body.done .progress { display: none; }
+body.done .thanks { display: block; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="wordmark"><b>Eridion</b> Glass</div>
+    <h1>How do you pick a glass sub?</h1>
+    <p>We're rebuilding our website and would rather hear it from builders than guess. Six quick taps, no pitch, and nothing gets shared outside Eridion.</p>
+    <div class="meta">About 90 seconds</div>
+  </div>
+</header>
+
+<div class="progress" aria-hidden="true">
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="wrap"><span id="progText">0 of 6 answered</span><span>Q7–8 optional</span></div>
+</div>
+
+<div class="wrap">
+<form id="survey" novalidate>
+
+  <fieldset data-q="role">
+    <legend><span class="q-num">1 · Your seat</span><span class="q-text">What's your role?</span></legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="role" value="Owner / principal"><span>Owner / principal</span></label>
+      <label class="opt"><input type="radio" name="role" value="Project manager / superintendent"><span>PM / superintendent</span></label>
+      <label class="opt"><input type="radio" name="role" value="Purchasing / estimating"><span>Purchasing / estimating</span></label>
+      <label class="opt"><input type="radio" name="role" value="Designer / architect"><span>Designer / architect</span></label>
+      <label class="opt"><input type="radio" name="role" value="Other trade"><span>Another trade</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset data-q="find">
+    <legend><span class="q-num">2 · Finding a sub</span><span class="q-text">When you need a new glass sub, where do you look first?</span></legend>
+    <span class="hint">Pick up to 2.</span>
+    <div class="opts" data-max="2">
+      <label class="opt"><input type="checkbox" name="find" value="Referral from another builder or trade"><span>Referral from a builder or trade</span></label>
+      <label class="opt"><input type="checkbox" name="find" value="Designer or architect recommends"><span>Designer / architect recommends</span></label>
+      <label class="opt"><input type="checkbox" name="find" value="Supplier or showroom"><span>Supplier or showroom</span></label>
+      <label class="opt"><input type="checkbox" name="find" value="Google search"><span>Google</span></label>
+      <label class="opt"><input type="checkbox" name="find" value="Houzz or Instagram"><span>Houzz / Instagram</span></label>
+      <label class="opt"><input type="checkbox" name="find" value="Existing bid list only"><span>We stick to our bid list</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset data-q="priorities">
+    <legend><span class="q-num">3 · What matters</span><span class="q-text">On a $1M+ home, what matters most in a glass sub?</span></legend>
+    <span class="hint">Pick your top 3.</span>
+    <div class="opts" data-max="3">
+      <label class="opt"><input type="checkbox" name="priorities" value="Hits the schedule"><span>Hits the schedule</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Accurate field measure, no remakes"><span>Measures right, no remakes</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Clear, complete bid"><span>Clear, complete bid</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Finish quality: edges, joints, hardware"><span>Finish quality: edges, hardware</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Communication and responsiveness"><span>Picks up the phone</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Price"><span>Price</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Clean site, clean punch list"><span>Clean site, clean punch list</span></label>
+      <label class="opt"><input type="checkbox" name="priorities" value="Stands behind the work"><span>Stands behind the work</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset data-q="headache">
+    <legend><span class="q-num">4 · The pain</span><span class="q-text">What's the biggest headache glass subs cause you?</span></legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="headache" value="Late or no-show"><span>Late or no-show</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Remeasures and remakes"><span>Remeasures and remakes</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Vague bids, surprise change orders"><span>Vague bids, surprise change orders</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Hard to reach"><span>Hard to reach</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Damage or mess on site"><span>Damage or mess on site</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Punch-list callbacks"><span>Punch-list callbacks</span></label>
+      <label class="opt"><input type="radio" name="headache" value="Other" data-other="headacheOther"><span>Something else</span></label>
+    </div>
+    <input type="text" class="other" id="headacheOther" name="headacheOther" placeholder="What is it?" maxlength="200">
+  </fieldset>
+
+  <fieldset data-q="website">
+    <legend><span class="q-num">5 · Before the bid</span><span class="q-text">If you checked a glass sub's website before a bid, what would you look for?</span></legend>
+    <span class="hint">Pick up to 3.</span>
+    <div class="opts" data-max="3">
+      <label class="opt"><input type="checkbox" name="website" value="Photos of homes like mine"><span>Photos of homes like mine</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Builders they work with"><span>Builders they work with</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Lead times and scheduling"><span>Lead times and scheduling</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Framing and blocking specs"><span>Framing / blocking specs</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="What's included in a bid"><span>What's in a bid</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Glass and hardware options"><span>Glass and hardware options</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Insurance and licensing"><span>Insurance and licensing</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="Easy way to send plans"><span>A place to send plans</span></label>
+      <label class="opt"><input type="checkbox" name="website" value="I don't check websites"><span>I don't check websites</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset data-q="history">
+    <legend><span class="q-num">6 · Us</span><span class="q-text">Have you worked with Eridion?</span></legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="history" value="Yes, regularly"><span>Yes, regularly</span></label>
+      <label class="opt"><input type="radio" name="history" value="Once or twice"><span>Once or twice</span></label>
+      <label class="opt"><input type="radio" name="history" value="Bid but didn't award"><span>Bid, didn't award</span></label>
+      <label class="opt"><input type="radio" name="history" value="Not yet"><span>Not yet</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset data-q="oneLine">
+    <legend><span class="q-num">7 · Optional</span><span class="q-text">One sentence: what would you tell another builder about us, or what should we do better?</span></legend>
+    <textarea id="oneLine" name="oneLine" rows="3" maxlength="600" placeholder="Straight answers welcome."></textarea>
+  </fieldset>
+
+  <fieldset data-q="who">
+    <legend><span class="q-num">8 · Optional</span><span class="q-text">Your name and company</span></legend>
+    <span class="hint">Only so we can say thanks. Leave it blank to stay anonymous.</span>
+    <div class="two">
+      <input type="text" id="name" name="name" placeholder="Name" maxlength="80" autocomplete="name">
+      <input type="text" id="company" name="company" placeholder="Company" maxlength="120" autocomplete="organization">
+    </div>
+  </fieldset>
+
+  <p class="error" id="error" role="alert"></p>
+</form>
+
+<section class="thanks" aria-live="polite">
+  <h2>Thank you.</h2>
+  <div class="rule"></div>
+  <p>That helps more than you'd think. What builders tell us here shapes the new site, so the next one checking us out finds what they actually need.</p>
+  <p class="sig">— Erika &amp; Dion, Eridion Glass</p>
+</section>
+</div>
+
+<div class="submit-bar">
+  <div class="wrap">
+    <small id="submitHint">Answer 1–6 to send.</small>
+    <button type="submit" form="survey" id="send">Send answers</button>
+  </div>
+</div>
+
+<script>
+// Responses go to the shared frosty-base worker (stored in KV, emailed to Erika).
+const ENDPOINT = 'https://frosty-base-f01e.erikagonzalez103.workers.dev/survey/builder';
+const REQUIRED = ['role', 'find', 'priorities', 'headache', 'website', 'history'];
+
+const form = document.getElementById('survey');
+const fill = document.getElementById('fill');
+const progText = document.getElementById('progText');
+const hint = document.getElementById('submitHint');
+const errorEl = document.getElementById('error');
+const sendBtn = document.getElementById('send');
+
+// Optional source tag from the link, e.g. ?from=hines, so we know which invite was answered.
+const source = (new URLSearchParams(location.search).get('from') || '').slice(0, 60);
+
+function values(name) {
+  return [...form.querySelectorAll(`[name="${name}"]:checked`)].map(i => i.value);
+}
+function answered(name) { return values(name).length > 0; }
+
+function update() {
+  const n = REQUIRED.filter(answered).length;
+  fill.style.width = (n / REQUIRED.length * 100) + '%';
+  progText.textContent = `${n} of ${REQUIRED.length} answered`;
+  hint.textContent = n === REQUIRED.length ? 'Ready when you are.' : `Answer 1–6 to send · ${REQUIRED.length - n} left`;
+
+  // Enforce "pick up to N" by disabling the rest once the limit is hit.
+  form.querySelectorAll('.opts[data-max]').forEach(group => {
+    const max = +group.dataset.max;
+    const boxes = [...group.querySelectorAll('input')];
+    const count = boxes.filter(b => b.checked).length;
+    boxes.forEach(b => { b.disabled = !b.checked && count >= max; });
+  });
+
+  // Show the "something else" box only when picked.
+  form.querySelectorAll('[data-other]').forEach(r => {
+    document.getElementById(r.dataset.other).classList.toggle('show', r.checked);
+  });
+}
+form.addEventListener('change', update);
+update();
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorEl.classList.remove('show');
+  const missing = REQUIRED.filter(q => !answered(q));
+  if (missing.length) {
+    const first = form.querySelector(`[data-q="${missing[0]}"]`);
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    errorEl.textContent = `Question ${REQUIRED.indexOf(missing[0]) + 1} still needs an answer.`;
+    errorEl.classList.add('show');
+    return;
+  }
+  const payload = {
+    role: values('role')[0],
+    find: values('find'),
+    priorities: values('priorities'),
+    headache: values('headache')[0],
+    headacheOther: document.getElementById('headacheOther').value.trim(),
+    website: values('website'),
+    history: values('history')[0],
+    oneLine: document.getElementById('oneLine').value.trim(),
+    name: document.getElementById('name').value.trim(),
+    company: document.getElementById('company').value.trim(),
+    source,
+    submittedAt: new Date().toISOString()
+  };
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'Sending…';
+  try {
+    const r = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    document.body.classList.add('done');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    errorEl.textContent = "That didn't go through. Check your signal and tap Send again.";
+    errorEl.classList.add('show');
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send answers';
+  }
+});
+</script>
+</body>
+</html>
